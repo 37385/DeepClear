@@ -3,54 +3,89 @@ package nettal.deepclear;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Utilities
 {
-	static boolean shouldPrintLog = true;
+	static boolean DEBUG = true;
 	public static String printLog(String s){
-		if (shouldPrintLog)
+		if (DEBUG)
 			Log.e("Info" , s);
 		return s;
 	}
 
-	public static Exception printLog(Exception e){
-		if (shouldPrintLog){
-			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append(e.toString());
-			for(StackTraceElement h :e.getStackTrace()){
-				stringBuilder.append("\n");
-				stringBuilder.append("    at ");
-				stringBuilder.append(h);
-				}
-			Log.e("Exception" , stringBuilder.toString());
+	public static String printLog(Exception e){
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(e.toString());
+		for(StackTraceElement h :e.getStackTrace()){
+			stringBuilder.append("\n");
+			stringBuilder.append("    at ");
+			stringBuilder.append(h);
 		}
-		return e;
+		if (DEBUG)
+			Log.e("Exception" , stringBuilder.toString());
+		return stringBuilder.toString();
 	}
 
 	public static ArrayList<String> printLog(ArrayList<String> arrayList){
-		if (shouldPrintLog)
+		if (DEBUG)
 			Log.e("Info" , arrayList.toString());
 		return arrayList;
 	}
 
-	public static List<PackageInfo> getAllApplications(Context context){
-		return context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES|PackageManager.GET_SERVICES);
+	public static void saveObjectToFile(Context context,Object obj,String file) throws Exception {
+		FileOutputStream fos = new FileOutputStream(
+				context.getFileStreamPath(file).getAbsolutePath());
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(obj);
+		oos.flush();
+		oos.close();
+		fos.close();
+	}
+
+	public static Object loadObjectFromFile(Context context,String file) throws Exception {
+		FileInputStream fis = new FileInputStream(
+				context.getFileStreamPath(file).getAbsolutePath());
+		ObjectInputStream ios = new ObjectInputStream(fis);
+		Object obj = ios.readObject();
+		ios.close();
+		fis.close();
+		return obj;
+	}
+
+	public static void toast(final String s, final Context context){
+		new Handler(Looper.getMainLooper()).post(new Runnable(){
+			@Override
+			public void run(){
+				Toast.makeText(context ,s,Toast.LENGTH_SHORT).show();
+			}
+		});
+	}
+
+	public static List<ApplicationInfo> getAllApplications(Context context){
+		return context.getPackageManager().getInstalledApplications(0);
 	}
 	
-	public static boolean isSystemApp(PackageInfo packageinfo){
-		return (packageinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
+	public static boolean isSystemApp(ApplicationInfo info){
+		return (info.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
 	}
 	
 	public static boolean isSystemApp(String packageName , Context context) throws PackageManager.NameNotFoundException{
-		return isSystemApp(context.getPackageManager().getPackageInfo(packageName,0));
+		return isSystemApp(context.getPackageManager().getPackageInfo(packageName,0).applicationInfo);
 	}
 
 	public static ArrayList<String> getAppPackagesFromRecents(String s){//dumpsys activity | grep recents

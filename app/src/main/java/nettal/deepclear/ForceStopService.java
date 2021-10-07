@@ -3,18 +3,18 @@ package nettal.deepclear;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.widget.Toast;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ForceStopService extends Service
 {
-	public static boolean isStart;
+	private boolean isStart;
+	private ForceStopThread forceStopThread;
+	
 	@Override
-	public IBinder onBind(Intent p1)
-	{
+	public IBinder onBind(Intent p1){
 		return null;
 	}
 
@@ -23,16 +23,34 @@ public class ForceStopService extends Service
 	{
 		if (isStart)
 			return super.onStartCommand(intent, flags, startId);
-		new ForceStopThread(this).start();
+		try{//获取到白名单
+			HashMap<String , Boolean> hashMap = (HashMap<String, Boolean>) Utilities.loadObjectFromFile(this, MainActivity.FileName);
+			forceStopThread = new ForceStopThread(this,hashMap);
+			forceStopThread.start();
+		}
+		catch (Exception e){//没获取到白名单
+			forceStopThread = new ForceStopThread(this, new HashMap<>());
+			forceStopThread.start();
+		}
 		isStart = true;
 		return super.onStartCommand(intent, flags, startId);
+	}
+
+	@Override
+	public void onDestroy(){
+		isStart = false;
+		forceStopThread.stopSelf();
 	}
 }
 class ForceStopThread extends Thread
 {
-	Context context;
-	public ForceStopThread(Context context){
+	private boolean running;
+	private Context context;
+	private HashMap<String , Boolean> hashMap;
+	public ForceStopThread(Context context , HashMap<String,Boolean> hashMap){
 		this.context = context;
+		this.hashMap = hashMap;
+		running = true;
 	}
 	@Override
 	public void run(){
@@ -40,37 +58,31 @@ class ForceStopThread extends Thread
 			Command command = new Command();
 			ArrayList<String> packageListBefore = Utilities.getAppPackagesFromRecents(
 					command.exec("dumpsys activity | grep recents"));
-			while (ForceStopService.isStart){
+			while (running){
 				sleep(1000);
 				ArrayList<String> packageList = Utilities.getAppPackagesFromRecents(
 						command.exec("dumpsys activity | grep recents"));
 				StringBuilder stringBuilder = new StringBuilder();
 				for (String packageName:packageListBefore) {
-					if (!packageList.contains(packageName) && !Utilities.isSystemApp(packageName , context)
-							&&!packageName.equals(context.getPackageName())){
+					if (!packageList.contains(packageName) && !hashMap.getOrDefault(packageName,
+						Utilities.isSystemApp(packageName , context) || packageName.equals(context.getPackageName()))){
 						stringBuilder.append(packageName);
 						stringBuilder.append(";");
 						command.exec("am force-stop "+packageName);
 					}
 				}
 				if (stringBuilder.length()!=0){
-					toast("Killed:"+stringBuilder.deleteCharAt(stringBuilder.length()-1));
+					Utilities.toast("Killed:"+stringBuilder.deleteCharAt(stringBuilder.length()-1),context);
 				}
 				packageListBefore = packageList;
 			}
 		}
 		catch (Exception e){
 			Utilities.printLog(e);
-			ForceStopService.isStart = false;
 		}
 	}
-	
-	private void toast(final String s){
-		new Handler(Looper.getMainLooper()).post(new Runnable(){
-				@Override
-				public void run(){
-					Toast.makeText(context ,s,Toast.LENGTH_SHORT).show();
-				}
-			});
+
+	public void stopSelf(){
+		running = false;
 	}
 }
