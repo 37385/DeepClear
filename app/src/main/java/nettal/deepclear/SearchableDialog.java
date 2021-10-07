@@ -6,12 +6,12 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class SearchableDialog extends android.app.AlertDialog.Builder
-{
-    public SearchableDialog(Context context , ArrayList<? extends View> viewList){
+public class SearchableDialog extends android.app.AlertDialog.Builder {
+    public SearchableDialog(Context context, ArrayList<? extends View> viewList) {
         super(context);
         ListViewAdapter<? extends View> adapter = new ListViewAdapter<>(viewList);
         /*
@@ -53,62 +53,63 @@ public class SearchableDialog extends android.app.AlertDialog.Builder
 }
 
 class ListViewAdapter<T extends View> extends android.widget.BaseAdapter
-        implements android.text.TextWatcher,AdapterView.OnItemClickListener
-{
+        implements android.text.TextWatcher, AdapterView.OnItemClickListener {
     private final ArrayList<T> viewArrayList;
     private final ArrayList<T> viewList;
-    ListViewAdapter(ArrayList<T> viewList){
+
+    ListViewAdapter(ArrayList<T> viewList) {
         this.viewList = viewList;
         this.viewArrayList = new ArrayList<>(viewList);
     }
 
     @Override
-    public int getCount(){
+    public int getCount() {
         return viewArrayList.size();
     }
 
     @Override
-    public Object getItem(int position){
+    public Object getItem(int position) {
         return viewArrayList.get(position);
     }
 
     @Override
-    public long getItemId(int position){
+    public long getItemId(int position) {
         return viewArrayList.get(position).getId();
     }
 
     @Override
-    public View getView(int position, View convertView, android.view.ViewGroup parent){
+    public View getView(int position, View convertView, android.view.ViewGroup parent) {
         return viewArrayList.get(position);
     }
 
     /* Text Watcher*/
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after){
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count){
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
     }
 
     @Override
-    public void afterTextChanged(android.text.Editable editable){
+    public void afterTextChanged(android.text.Editable editable) {
         viewArrayList.clear();
         viewArrayList.addAll(viewList);
-        if(editable != null && editable.length()!=0){//此时输入框不为空
+        if (editable != null && editable.length() != 0) {//此时输入框不为空
             String lowCase = editable.toString().toLowerCase();
             ArrayList<LinkedList<T>> linkedLists = new ArrayList<>();
-            a:for(int k = viewArrayList.size()-1;k>=0;k--){//根据index把item塞入linkedLists.要倒着来。
+            a:
+            for (int k = viewArrayList.size() - 1; k >= 0; k--) {//根据index把item塞入linkedLists.要倒着来。
                 //	a:for(int k = 0 ; k<viewArrayList.size();k++){//根据index把item塞入linkedLists.
                 T t = viewArrayList.get(k);
                 int index = t.toString().toLowerCase().indexOf(lowCase);
-                if(index==-1) continue;
-                while(index>=linkedLists.size()){
+                if (index == -1) continue;
+                while (index >= linkedLists.size()) {
                     linkedLists.add(new LinkedList<>());
                 }
                 java.util.ListIterator<T> iterator = linkedLists.get(index).listIterator();
-                while(iterator.hasNext()){//从小到大排序
-                    if(t.toString().length()<=iterator.next().toString().length()){
+                while (iterator.hasNext()) {//从小到大排序
+                    if (t.toString().length() <= iterator.next().toString().length()) {
                         iterator.previous();//向前一次
                         iterator.add(t);
                         continue a;
@@ -117,7 +118,7 @@ class ListViewAdapter<T extends View> extends android.widget.BaseAdapter
                 linkedLists.get(index).addLast(t);//注意continue a;
             }
             viewArrayList.clear();
-            for(int b = 0;b<linkedLists.size();b++){//塞入排序过的
+            for (int b = 0; b < linkedLists.size(); b++) {//塞入排序过的
                 viewArrayList.addAll(linkedLists.get(b));
             }
         }
@@ -126,7 +127,7 @@ class ListViewAdapter<T extends View> extends android.widget.BaseAdapter
 
     /* OnItemClickListener*/
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         view.setEnabled(!view.isEnabled());
     }
 }
