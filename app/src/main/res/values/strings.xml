@@ -5,5 +5,6 @@
     <string name="white_list">WhiteList</string>
     <string name="about">About</string>
     <string name="search">Search</string>
+    <string name="about_detail">"This project is under GUN LGPL v2.1\nLong click to open the project repository"</string>
 
 </resources>

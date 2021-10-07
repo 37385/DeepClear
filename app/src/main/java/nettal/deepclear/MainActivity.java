@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.view.View.OnClickListener;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +31,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Button startService = findViewById(R.id.activity_main_StartService);
         whiteList = findViewById(R.id.activity_main_WhiteList);
+        Button about = findViewById(R.id.activity_main_About);
         startService.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View p1) {
@@ -87,6 +90,19 @@ public class MainActivity extends Activity {
                         whiteList.setEnabled(true);
                     }
                 });
+            }
+        });
+        about.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.about_detail, Toast.LENGTH_LONG).show();
+            }
+        });
+        about.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/37385/DeepClear")));
+                return true;
             }
         });
     }

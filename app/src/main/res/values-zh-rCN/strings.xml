@@ -5,5 +5,6 @@
     <string name="white_list">白名单</string>
     <string name="about">关于</string>
     <string name="search">搜索</string>
+    <string name="about_detail">"本项目基于GUN LGPL v2.1\n长按以打开项目仓库"</string>
 
 </resources>
