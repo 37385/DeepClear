@@ -4,5 +4,6 @@
     <string name="start_service">StartService</string>
     <string name="white_list">WhiteList</string>
     <string name="about">About</string>
+    <string name="search">Search</string>
 
 </resources>

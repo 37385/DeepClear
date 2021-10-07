@@ -4,5 +4,6 @@
     <string name="start_service">启动服务</string>
     <string name="white_list">白名单</string>
     <string name="about">关于</string>
+    <string name="search">搜索</string>
 
 </resources>

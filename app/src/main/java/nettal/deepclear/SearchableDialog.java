@@ -18,7 +18,7 @@ public class SearchableDialog extends android.app.AlertDialog.Builder {
          EditText
          */
         EditText editText = new EditText(context);
-        editText.setHint("搜索");
+        editText.setHint(R.string.search);
         editText.setAllCaps(false);
         editText.setMaxLines(1);
         editText.addTextChangedListener(adapter);
