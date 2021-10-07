@@ -2,7 +2,6 @@ package nettal.deepclear;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -79,7 +78,7 @@ class ListViewAdapter<T extends View> extends android.widget.BaseAdapter
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, android.view.ViewGroup parent){
         return viewArrayList.get(position);
     }
 
