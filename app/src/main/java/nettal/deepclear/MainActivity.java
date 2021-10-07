@@ -67,9 +67,10 @@ public class MainActivity extends Activity {
                     }
                 }
                 dialog = new SearchableDialog(MainActivity.this, fullAppView);
-                dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton("OK", null);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onDismiss(DialogInterface dialog) {
                         HashMap<String, Boolean> hashMap = new HashMap<>();
                         for (DialogView dialogView : fullAppView) {
                             hashMap.put(dialogView.getApplicationInfo().packageName, dialogView.isEnabled());

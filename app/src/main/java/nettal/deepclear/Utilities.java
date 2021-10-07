@@ -88,23 +88,36 @@ public class Utilities {
         return isSystemApp(context.getPackageManager().getPackageInfo(packageName, 0).applicationInfo);
     }
 
+    String exampleFor11 = "ACTIVITY MANAGER RECENT TASKS (dumpsys activity recents)\n" +
+            "    name=recents_animation_input_consumer pid=9977 user=UserHandle{0}\n" +
+            "    #55: vis    TOP  LCM 9977:app.lawnchair/u0a413 act:activities|recents\n" +
+            "    #53: fg     TOP  LCM 28490:org.connectbot/u0a373 act:activities|recents\n" +
+            "    #50: prev   LAST --- 21978:cn.wps.moffice_eng:pdfreader1/u0a383 act:activities|recents\n" +
+            "    #49: prev   SVC  --- 21980:com.tencent.mobileqq/u0a368 act:activities|recents\n" +
+            "    #46: cch+15 SVC  --- 21977:com.netease.cloudmusic/u0a396 act:activities|recents\n";
+
+    String exampleFor10 = "ACTIVITY MANAGER RECENT TASKS (dumpsys activity recents)\n" +
+            "    #53: fore   TOP  25936:org.connectbot/u0a349  activity=activities|recents\n" +
+            "    #52: vis    TOP  3325:ch.deletescape.lawnchair.ci/u0a325  activity=activities|recents\n" +
+            "    #51: prev   LAST 25938:us.mathlab.android.calc.edu/u0a339  activity=activities|recents\n" +
+            "    #50: cch    CAC  21925:com.aide.ui/u0a350  activity=activities|recents\n" +
+            "    #48: prcp   FGS  21277:com.dv.adm.pay/u0a317  activity=activities|recents\n" +
+            "    #46: cch+ 5 SVC  21280:nettal.deepclear/u0a422  activity=activities|recents\n" +
+            "    #45: cch+10 CAC  17630:com.android.chrome/u0a311  activity=activities|recents";
+
     public static ArrayList<String> getAppPackagesFromRecents(String s) {//dumpsys activity | grep recents
         ArrayList<String> packageList = new ArrayList<>();
         for (int i = 0; i < s.length() - 1; i++) {
             if (s.charAt(i) == '#') {
                 int colonIndex = 0;
-                for (i = i + 5; i < s.length(); i++) {
-                    if (s.charAt(i) == ':') {
-                        colonIndex = i;
-                        break;
-                    }
+                while (i < s.length() - 1 && s.charAt(i++) != ':') {
                 }
-                for (i++; i < s.length() && colonIndex != 0; i++) {
-                    if (s.charAt(i) == '/' || s.charAt(i) == ':') {
-                        packageList.add(s.substring(colonIndex + 1, i));
-                        break;
-                    }
+                while (i < s.length() - 1 && s.charAt(i++) != ':') {
                 }
+                colonIndex = i - 1;
+                while (i++ < s.length() - 1 && s.charAt(i) != '/' && s.charAt(i) != ':') {
+                }
+                packageList.add(s.substring(colonIndex + 1, i));
             }
         }
         return packageList;
