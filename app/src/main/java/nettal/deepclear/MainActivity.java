@@ -3,13 +3,13 @@ package nettal.deepclear;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
-import android.view.View.OnClickListener;
 import android.view.View;
-import android.content.Intent;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,13 +55,13 @@ public class MainActivity extends Activity {
                 try {//获取到白名单
                     HashMap<String, Boolean> hashMap = (HashMap<String, Boolean>) Utilities.loadObjectFromFile(MainActivity.this, FileName);
                     for (ApplicationInfo info : fullAppList) {
-                        DialogView dv = new DialogView(MainActivity.this, info, (int) (whiteList.getWidth() / 1.6), ((TextView) whiteList).getTextSize() / 1.7f);
+                        DialogView dv = new DialogView(MainActivity.this, info, (int) (whiteList.getWidth() / 1.6), whiteList.getTextSize() / 1.7f);
                         dv.setEnabled(hashMap.getOrDefault(info.packageName, Utilities.isSystemApp(info)));
                         fullAppView.add(dv);
                     }
                 } catch (Exception e) {//没获取到白名单
                     for (ApplicationInfo info : fullAppList) {
-                        DialogView dv = new DialogView(MainActivity.this, info, (int) (whiteList.getWidth() / 1.6), ((TextView) whiteList).getTextSize() / 1.7f);
+                        DialogView dv = new DialogView(MainActivity.this, info, (int) (whiteList.getWidth() / 1.6), whiteList.getTextSize() / 1.7f);
                         dv.setEnabled(Utilities.isSystemApp(info) || info.packageName.equals(MainActivity.this.getPackageName()));
                         fullAppView.add(dv);
                     }
@@ -85,12 +85,7 @@ public class MainActivity extends Activity {
                             startService(new Intent(MainActivity.this, ForceStopService.class));
                     }
                 });
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        whiteList.setEnabled(true);
-                    }
-                });
+                whiteList.setEnabled(true);
             }
         });
         about.setOnClickListener(new OnClickListener() {

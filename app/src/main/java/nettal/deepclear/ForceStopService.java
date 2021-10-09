@@ -41,9 +41,9 @@ public class ForceStopService extends Service {
 }
 
 class ForceStopThread extends Thread {
+    private final Context context;
+    private final HashMap<String, Boolean> hashMap;
     private boolean running;
-    private Context context;
-    private HashMap<String, Boolean> hashMap;
 
     public ForceStopThread(Context context, HashMap<String, Boolean> hashMap) {
         this.context = context;
@@ -55,16 +55,16 @@ class ForceStopThread extends Thread {
     public void run() {
         try {
             Command command = new Command();
-            ArrayList<String> packageListBefore = Utilities.getAppPackagesFromRecents(
-                    command.exec("dumpsys activity | grep recents"));
+            ArrayList<String> packageListBefore = Utilities.getRunningAppPackages(command);
             while (running) {
                 sleep(1000);
-                ArrayList<String> packageList = Utilities.getAppPackagesFromRecents(
-                        command.exec("dumpsys activity | grep recents"));
+                ArrayList<String> packageList = Utilities.getRunningAppPackages(command);
                 StringBuilder stringBuilder = new StringBuilder();
                 for (String packageName : packageListBefore) {
                     if (!packageList.contains(packageName) && !hashMap.getOrDefault(packageName,
                             Utilities.isSystemApp(packageName, context) || packageName.equals(context.getPackageName()))) {
+                        if (stringBuilder.lastIndexOf(packageName) != -1)
+                            continue;
                         stringBuilder.append(packageName);
                         stringBuilder.append(";");
                         command.exec("am force-stop " + packageName);
