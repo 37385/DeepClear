@@ -76,7 +76,7 @@ class ForceStopThread extends Thread {
                 packageListBefore = packageList;
             }
         } catch (Exception e) {
-            Utilities.printLog(e);
+            Utilities.toast(Utilities.printLog(e), context);
         }
     }
 
