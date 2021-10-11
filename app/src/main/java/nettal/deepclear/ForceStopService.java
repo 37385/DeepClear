@@ -60,11 +60,14 @@ class ForceStopThread extends Thread {
                 sleep(1000);
                 ArrayList<String> packageList = Utilities.getRunningAppPackages(command);
                 StringBuilder stringBuilder = new StringBuilder();
+                a:
                 for (String packageName : packageListBefore) {
                     if (!packageList.contains(packageName) && !hashMap.getOrDefault(packageName,
                             Utilities.isSystemApp(packageName, context) || packageName.equals(context.getPackageName()))) {
-                        if (stringBuilder.lastIndexOf(packageName) != -1)
-                            continue;
+                        for (String s : stringBuilder.toString().split(";")) {
+                            if (s.equals(packageName))
+                                continue a;
+                        }
                         stringBuilder.append(packageName);
                         stringBuilder.append(";");
                         command.exec("am force-stop " + packageName);
