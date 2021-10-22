@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ForceStopService extends Service {
-    private boolean isStart;
+    private boolean running;
     private ForceStopThread forceStopThread;
 
     @Override
@@ -19,7 +19,7 @@ public class ForceStopService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (isStart)
+        if (running)
             return super.onStartCommand(intent, flags, startId);
         try {//获取到白名单
             HashMap<String, Boolean> hashMap = (HashMap<String, Boolean>) Utilities.loadObjectFromFile(this, MainActivity.FileName);
@@ -29,13 +29,13 @@ public class ForceStopService extends Service {
             forceStopThread = new ForceStopThread(this, new HashMap<>());
             forceStopThread.start();
         }
-        isStart = true;
+        running = true;
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
-        isStart = false;
+        running = false;
         forceStopThread.stopSelf();
     }
 }
@@ -54,7 +54,7 @@ class ForceStopThread extends Thread {
     @Override
     public void run() {
         try {
-            Command command = new Command();
+            Command command = Command.getCommand();
             ArrayList<String> packageListBefore = Utilities.getRunningAppPackages(command);
             while (running) {
                 sleep(1000);
@@ -71,6 +71,8 @@ class ForceStopThread extends Thread {
                         stringBuilder.append(packageName);
                         stringBuilder.append(";");
                         command.exec("am force-stop " + packageName);
+                        command.exec("am force-stop " + packageName);
+                        command.exec("am force-stop " + packageName);
                     }
                 }
                 if (stringBuilder.length() != 0) {
@@ -78,6 +80,7 @@ class ForceStopThread extends Thread {
                 }
                 packageListBefore = packageList;
             }
+            command.close();
         } catch (Exception e) {
             Utilities.toast(Utilities.printLog(e), context);
         }

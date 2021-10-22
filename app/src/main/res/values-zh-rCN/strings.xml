@@ -6,5 +6,7 @@
     <string name="about">关于</string>
     <string name="search">搜索</string>
     <string name="about_detail">"本项目基于GUN LGPL v2.1\n长按以打开项目仓库"</string>
+    <string name="non_SU">无root权限，此应用将不会运行</string>
+    <string name="non_ignoreBatteryOptimization">未放入电池白名单，此应用将不会运行</string>
 
 </resources>

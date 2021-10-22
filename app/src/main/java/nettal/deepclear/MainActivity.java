@@ -35,9 +35,7 @@ public class MainActivity extends Activity {
         startService.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View p1) {
-                stopService(new Intent(MainActivity.this, ForceStopService.class));
-                if (Utilities.ignoreBatteryOptimization(MainActivity.this))
-                    startService(new Intent(MainActivity.this, ForceStopService.class));
+                checkPermissionsAndStartService();
             }
         });
         whiteList.setOnClickListener(new OnClickListener() {
@@ -57,9 +55,7 @@ public class MainActivity extends Activity {
                         } catch (Exception e) {
                             Utilities.toast(Utilities.printLog(e), MainActivity.this);
                         }
-                        stopService(new Intent(MainActivity.this, ForceStopService.class));
-                        if (Utilities.ignoreBatteryOptimization(MainActivity.this))
-                            startService(new Intent(MainActivity.this, ForceStopService.class));
+                        checkPermissionsAndStartService();
                     }
                 });
                 dialog.show();
@@ -100,6 +96,19 @@ public class MainActivity extends Activity {
                 return true;
             }
         });
+    }
+
+    private void checkPermissionsAndStartService() {
+        if (!Utilities.ignoreBatteryOptimization(MainActivity.this)) {
+            Toast.makeText(MainActivity.this, getString(R.string.non_ignoreBatteryOptimization), Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!Command.checkSU()) {
+            Toast.makeText(MainActivity.this, getString(R.string.non_SU), Toast.LENGTH_LONG).show();
+            return;
+        }
+        stopService(new Intent(MainActivity.this, ForceStopService.class));
+        startService(new Intent(MainActivity.this, ForceStopService.class));
     }
 }
 

@@ -6,5 +6,7 @@
     <string name="about">About</string>
     <string name="search">Search</string>
     <string name="about_detail">"This project is under GUN LGPL v2.1\nLong click to open the project repository"</string>
+    <string name="non_SU">Without Superuser rights, this application will not run</string>
+    <string name="non_ignoreBatteryOptimization">Not in the battery whitelist, this application will not run</string>
 
 </resources>
