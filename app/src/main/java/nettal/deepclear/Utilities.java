@@ -12,9 +12,11 @@ import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +48,18 @@ public class Utilities {
         if (DEBUG)
             Log.e("ArrayList", arrayList.toString());
         return arrayList;
+    }
+
+    public static void writeStringToFile(String destination, String text) {
+        try {
+            FileWriter fileWriter = new FileWriter(destination, true);
+            fileWriter.write("Time:" + DateFormat.getDateInstance().format(System.currentTimeMillis()) + System.lineSeparator());
+            fileWriter.write(text);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            Utilities.printLog(e);
+        }
     }
 
     /*Serializable*/
@@ -151,7 +165,8 @@ public class Utilities {
                 colonIndex = i - 1;
                 while (i++ < s.length() - 1 && s.charAt(i) != '/' && s.charAt(i) != ':') {
                 }
-                packageList.add(s.substring(colonIndex + 1, i));
+                if (colonIndex + 1 < i)
+                    packageList.add(s.substring(colonIndex + 1, i));
             }
         }
         return packageList;
@@ -169,7 +184,8 @@ public class Utilities {
                 spaceIndex = i++;
                 while (i++ < s.length() - 1 && s.charAt(i) != '/') {
                 }
-                packageList.add(s.substring(spaceIndex + 1, i));
+                if (spaceIndex + 1 < i)
+                    packageList.add(s.substring(spaceIndex + 1, i));
             }
         }
         return packageList;
