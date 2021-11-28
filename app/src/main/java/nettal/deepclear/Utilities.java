@@ -165,7 +165,7 @@ public class Utilities {
                 colonIndex = i - 1;
                 while (i++ < s.length() - 1 && s.charAt(i) != '/' && s.charAt(i) != ':') {
                 }
-                if (colonIndex + 1 < i)
+                if (colonIndex + 1 < i && s.length() > i)
                     packageList.add(s.substring(colonIndex + 1, i));
             }
         }
@@ -184,7 +184,7 @@ public class Utilities {
                 spaceIndex = i++;
                 while (i++ < s.length() - 1 && s.charAt(i) != '/') {
                 }
-                if (spaceIndex + 1 < i)
+                if (spaceIndex + 1 < i && s.length() > i)
                     packageList.add(s.substring(spaceIndex + 1, i));
             }
         }
