@@ -129,21 +129,26 @@ public class Utilities {
                 #45: cch+10 CAC  17630:com.android.chrome/u0a311  activity=activities|recents""";
 
     String exampleFor10And7 = """
-            Running activities (most recent first):
-                Run #1: ActivityRecord{d47636c u0 org.connectbot/.ConsoleActivity t279}
-                Run #0: ActivityRecord{da211d6 u0 org.connectbot/.HostListActivity t279}
-            Running activities (most recent first):
-                Run #0: ActivityRecord{7e5f1cf u0 ch.deletescape.lawnchair.ci/ch.deletescape.lawnchair.LawnchairLauncher t44}
-            Running activities (most recent first):
-                Run #0: ActivityRecord{14877e9 u0 com.speedsoftware.rootexplorer/.RootExplorer t285}
-            Running activities (most recent first):
-                Run #0: ActivityRecord{b375e8e u0 cn.wps.moffice_eng/cn.wps.moffice.pdf.multiactivity.PDFReader1 t284}
-            Running activities (most recent first):
-                Run #0: ActivityRecord{63791b u0 cn.wps.moffice_eng/cn.wps.moffice.main.local.home.HomeActivity t283}
-            Running activities (most recent first):
-                Run #0: ActivityRecord{c3e8ab0 u0 com.aide.ui/.MainActivity t275}
-            Running activities (most recent first):
-                Run #0: ActivityRecord{c63cc68 u0 nettal.deepclear/.MainActivity t277}""";
+              * ContentProviderRecord{1b0bf07 u0 com.nowcasting.activity/razerdp.basepopup.BasePopupRuntimeTrojanProvider}
+              * ServiceRecord{349806e u0 com.eg.android.AlipayGphone/com.alipay.dexaop.power.RuntimePowerService}
+                baseIntent=Intent { flg=0x14000000 cmp=com.android.settings/.Settings$DevRunningServicesActivity }
+                 #0 ActivityRecord{ea1a3c2 u0 com.android.settings/.Settings$DevRunningServicesActivity t1689} type=standard mode=fullscreen override-mode=undefined
+                Running activities (most recent first):
+                    Run #1: ActivityRecord{46b5be5 u0 org.connectbot/.ConsoleActivity t1690}
+                    Run #0: ActivityRecord{d5294f2 u0 org.connectbot/.HostListActivity t1690}
+                Running activities (most recent first):
+                    Run #0: ActivityRecord{6c05bd4 u0 ch.deletescape.lawnchair.ci/ch.deletescape.lawnchair.LawnchairLauncher t1043}
+                  intent={flg=0x14000000 cmp=com.android.settings/.Settings$DevRunningServicesActivity}
+                  mActivityComponent=com.android.settings/.Settings$DevRunningServicesActivity
+                  Activities=[ActivityRecord{ea1a3c2 u0 com.android.settings/.Settings$DevRunningServicesActivity t1689}]
+                    Hist #0: ActivityRecord{ea1a3c2 u0 com.android.settings/.Settings$DevRunningServicesActivity t1689}
+                      Intent { flg=0x14000000 cmp=com.android.settings/.Settings$DevRunningServicesActivity }
+                Running activities (most recent first):
+                    Run #0: ActivityRecord{ea1a3c2 u0 com.android.settings/.Settings$DevRunningServicesActivity t1689}
+                Running activities (most recent first):
+                    Run #0: ActivityRecord{ecf75ae u0 com.eg.android.AlipayGphone/.AlipayLogin t1688}
+                    com.eg.android.AlipayGphone/com.alipay.dexaop.power.RuntimePowerService<=Proc{23940:com.eg.android.AlipayGphone:tools/u0a326}
+            """;
 
     public static ArrayList<String> getRunningAppPackages(Command command) throws IOException {
         return android.os.Build.VERSION.SDK_INT > 29//Android Q;SDK 29
@@ -174,7 +179,9 @@ public class Utilities {
     public static ArrayList<String> getRunningAppPackagesFromRun(String s) {//dumpsys activity | grep Run
         ArrayList<String> packageList = new ArrayList<>(16);
         for (int i = 0; i < s.length() - 1; i++) {
-            if (s.charAt(i) == '{') {
+            if (s.charAt(i) == '#') {
+                do i++;
+                while (i < s.length() && s.charAt(i) != '{');
                 do i++;
                 while (i < s.length() && s.charAt(i) != ' ');
                 do i++;
