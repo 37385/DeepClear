@@ -23,7 +23,7 @@ import java.util.List;
 
 public class Utilities {
     /*Debug*/
-    static boolean DEBUG = true;
+    static final boolean DEBUG = BuildConfig.DEBUG;
 
     public static String printLog(String s) {
         if (DEBUG)
@@ -87,14 +87,10 @@ public class Utilities {
     public static final Handler mainHandler = new Handler();
 
     public static void toast(final String s, final Context context) {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
-            }
-        });
+        mainHandler.post(() -> Toast.makeText(context, s, Toast.LENGTH_SHORT).show());
     }
 
+    /*AppInfo*/
     public static List<ApplicationInfo> getAllApplications(Context context) {
         return context.getPackageManager().getInstalledApplications(0);
     }
@@ -113,38 +109,41 @@ public class Utilities {
     }
 
     /*Example*/
-    String exampleFor11 = "ACTIVITY MANAGER RECENT TASKS (dumpsys activity recents)\n" +
-            "    name=recents_animation_input_consumer pid=9977 user=UserHandle{0}\n" +
-            "    #55: vis    TOP  LCM 9977:app.lawnchair/u0a413 act:activities|recents\n" +
-            "    #53: fg     TOP  LCM 28490:org.connectbot/u0a373 act:activities|recents\n" +
-            "    #50: prev   LAST --- 21978:cn.wps.moffice_eng:pdfreader1/u0a383 act:activities|recents\n" +
-            "    #49: prev   SVC  --- 21980:com.tencent.mobileqq/u0a368 act:activities|recents\n" +
-            "    #46: cch+15 SVC  --- 21977:com.netease.cloudmusic/u0a396 act:activities|recents";
+    String exampleFor11 = """
+            ACTIVITY MANAGER RECENT TASKS (dumpsys activity recents)
+                name=recents_animation_input_consumer pid=9977 user=UserHandle{0}
+                #55: vis    TOP  LCM 9977:app.lawnchair/u0a413 act:activities|recents
+                #53: fg     TOP  LCM 28490:org.connectbot/u0a373 act:activities|recents
+                #50: prev   LAST --- 21978:cn.wps.moffice_eng:pdfreader1/u0a383 act:activities|recents
+                #49: prev   SVC  --- 21980:com.tencent.mobileqq/u0a368 act:activities|recents
+                #46: cch+15 SVC  --- 21977:com.netease.cloudmusic/u0a396 act:activities|recents""";
 
-    String exampleFor10 = "ACTIVITY MANAGER RECENT TASKS (dumpsys activity recents)\n" +
-            "    #53: fore   TOP  25936:org.connectbot/u0a349  activity=activities|recents\n" +
-            "    #52: vis    TOP  3325:ch.deletescape.lawnchair.ci/u0a325  activity=activities|recents\n" +
-            "    #51: prev   LAST 25938:us.mathlab.android.calc.edu/u0a339  activity=activities|recents\n" +
-            "    #50: cch    CAC  21925:com.aide.ui/u0a350  activity=activities|recents\n" +
-            "    #48: prcp   FGS  21277:com.dv.adm.pay/u0a317  activity=activities|recents\n" +
-            "    #46: cch+ 5 SVC  21280:nettal.deepclear/u0a422  activity=activities|recents\n" +
-            "    #45: cch+10 CAC  17630:com.android.chrome/u0a311  activity=activities|recents";
+    String exampleFor10 = """
+            ACTIVITY MANAGER RECENT TASKS (dumpsys activity recents)
+                #53: fore   TOP  25936:org.connectbot/u0a349  activity=activities|recents
+                #52: vis    TOP  3325:ch.deletescape.lawnchair.ci/u0a325  activity=activities|recents
+                #51: prev   LAST 25938:us.mathlab.android.calc.edu/u0a339  activity=activities|recents
+                #50: cch    CAC  21925:com.aide.ui/u0a350  activity=activities|recents
+                #48: prcp   FGS  21277:com.dv.adm.pay/u0a317  activity=activities|recents
+                #46: cch+ 5 SVC  21280:nettal.deepclear/u0a422  activity=activities|recents
+                #45: cch+10 CAC  17630:com.android.chrome/u0a311  activity=activities|recents""";
 
-    String exampleFor10And7 = "    Running activities (most recent first):\n" +
-            "        Run #1: ActivityRecord{d47636c u0 org.connectbot/.ConsoleActivity t279}\n" +
-            "        Run #0: ActivityRecord{da211d6 u0 org.connectbot/.HostListActivity t279}\n" +
-            "    Running activities (most recent first):\n" +
-            "        Run #0: ActivityRecord{7e5f1cf u0 ch.deletescape.lawnchair.ci/ch.deletescape.lawnchair.LawnchairLauncher t44}\n" +
-            "    Running activities (most recent first):\n" +
-            "        Run #0: ActivityRecord{14877e9 u0 com.speedsoftware.rootexplorer/.RootExplorer t285}\n" +
-            "    Running activities (most recent first):\n" +
-            "        Run #0: ActivityRecord{b375e8e u0 cn.wps.moffice_eng/cn.wps.moffice.pdf.multiactivity.PDFReader1 t284}\n" +
-            "    Running activities (most recent first):\n" +
-            "        Run #0: ActivityRecord{63791b u0 cn.wps.moffice_eng/cn.wps.moffice.main.local.home.HomeActivity t283}\n" +
-            "    Running activities (most recent first):\n" +
-            "        Run #0: ActivityRecord{c3e8ab0 u0 com.aide.ui/.MainActivity t275}\n" +
-            "    Running activities (most recent first):\n" +
-            "        Run #0: ActivityRecord{c63cc68 u0 nettal.deepclear/.MainActivity t277}";
+    String exampleFor10And7 = """
+            Running activities (most recent first):
+                Run #1: ActivityRecord{d47636c u0 org.connectbot/.ConsoleActivity t279}
+                Run #0: ActivityRecord{da211d6 u0 org.connectbot/.HostListActivity t279}
+            Running activities (most recent first):
+                Run #0: ActivityRecord{7e5f1cf u0 ch.deletescape.lawnchair.ci/ch.deletescape.lawnchair.LawnchairLauncher t44}
+            Running activities (most recent first):
+                Run #0: ActivityRecord{14877e9 u0 com.speedsoftware.rootexplorer/.RootExplorer t285}
+            Running activities (most recent first):
+                Run #0: ActivityRecord{b375e8e u0 cn.wps.moffice_eng/cn.wps.moffice.pdf.multiactivity.PDFReader1 t284}
+            Running activities (most recent first):
+                Run #0: ActivityRecord{63791b u0 cn.wps.moffice_eng/cn.wps.moffice.main.local.home.HomeActivity t283}
+            Running activities (most recent first):
+                Run #0: ActivityRecord{c3e8ab0 u0 com.aide.ui/.MainActivity t275}
+            Running activities (most recent first):
+                Run #0: ActivityRecord{c63cc68 u0 nettal.deepclear/.MainActivity t277}""";
 
     public static ArrayList<String> getRunningAppPackages(Command command) throws IOException {
         return android.os.Build.VERSION.SDK_INT > 29//Android Q;SDK 29
@@ -154,17 +153,16 @@ public class Utilities {
 
     /*Available for 10 and above*/
     public static ArrayList<String> getRunningAppPackagesFromRecents(String s) {//dumpsys activity | grep recents
-        ArrayList<String> packageList = new ArrayList<>();
+        ArrayList<String> packageList = new ArrayList<>(16);
         for (int i = 0; i < s.length() - 1; i++) {
             if (s.charAt(i) == '#') {
-                int colonIndex = 0;
-                while (i < s.length() - 1 && s.charAt(i++) != ':') {
-                }
-                while (i < s.length() - 1 && s.charAt(i++) != ':') {
-                }
-                colonIndex = i - 1;
-                while (i++ < s.length() - 1 && s.charAt(i) != '/' && s.charAt(i) != ':') {
-                }
+                do i++;
+                while (i < s.length() && s.charAt(i) != ':');
+                do i++;
+                while (i < s.length() && s.charAt(i) != ':');
+                int colonIndex = i;
+                do i++;
+                while (i < s.length() - 1 && s.charAt(i) != '/' && s.charAt(i) != ':');
                 if (colonIndex + 1 < i && s.length() > i)
                     packageList.add(s.substring(colonIndex + 1, i));
             }
@@ -174,16 +172,16 @@ public class Utilities {
 
     /*Available for 10 and below*/
     public static ArrayList<String> getRunningAppPackagesFromRun(String s) {//dumpsys activity | grep Run
-        ArrayList<String> packageList = new ArrayList<>();
+        ArrayList<String> packageList = new ArrayList<>(16);
         for (int i = 0; i < s.length() - 1; i++) {
             if (s.charAt(i) == '{') {
-                int spaceIndex = 0;
-                while (i < s.length() - 1 && !(s.charAt((i++) - 2) == ' ' && s.charAt(i - 2) == 'u'
-                        && s.charAt(i - 1) == '0' && s.charAt(i) == ' ')) {
-                }
-                spaceIndex = i++;
-                while (i++ < s.length() - 1 && s.charAt(i) != '/') {
-                }
+                do i++;
+                while (i < s.length() && s.charAt(i) != ' ');
+                do i++;
+                while (i < s.length() && s.charAt(i) != ' ');
+                int spaceIndex = i;
+                do i++;
+                while (i < s.length() && s.charAt(i) != '/');
                 if (spaceIndex + 1 < i && s.length() > i)
                     packageList.add(s.substring(spaceIndex + 1, i));
             }

@@ -2,7 +2,7 @@ package nettal.deepclear;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -12,11 +12,23 @@ import java.util.LinkedList;
 
 public class SearchableDialog extends android.app.AlertDialog.Builder {
     public SearchableDialog(Context context, ArrayList<? extends View> viewList) {
+        this(context, viewList, (editText, listView) -> {
+            /*LinearLayout*/
+            LinearLayout linearLayout = new LinearLayout(context);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);//垂直方向
+            linearLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            linearLayout.addView(editText);
+            linearLayout.addView(listView);
+            return linearLayout;
+        });
+    }
+
+    public SearchableDialog(Context context, ArrayList<? extends View> viewList, CustomizeLayout customizeLayout) {
         super(context);
         ListViewAdapter<? extends View> adapter = new ListViewAdapter<>(viewList);
-        /*
-         EditText
-         */
+        /*EditText*/
         EditText editText = new EditText(context);
         editText.setHint(R.string.search);
         editText.setAllCaps(false);
@@ -24,36 +36,26 @@ public class SearchableDialog extends android.app.AlertDialog.Builder {
         editText.addTextChangedListener(adapter);
         editText.setImeOptions(android.view.inputmethod.EditorInfo.IME_ACTION_DONE);
         editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT);//单行输入的前提
-        editText.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        /*
-         ListView
-         */
+        editText.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        /*ListView */
         ListView listView = new ListView(context);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setOnItemClickListener(adapter);
-        listView.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        /*
-         LinearLayout
-         */
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);//垂直方向
-        linearLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        linearLayout.addView(editText);
-        linearLayout.addView(listView);
-        /*
-         Dialog
-         */
-        setView(linearLayout);
+        listView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        /*Dialog*/
+        setView(customizeLayout.getLayout(editText, listView));
+    }
+
+    public interface CustomizeLayout {
+        ViewGroup getLayout(EditText editText, ListView listView);
     }
 }
 
 class ListViewAdapter<T extends View> extends android.widget.BaseAdapter
-        implements android.text.TextWatcher, AdapterView.OnItemClickListener {
+        implements android.text.TextWatcher, android.widget.AdapterView.OnItemClickListener {
     private final ArrayList<T> viewArrayList;
     private final ArrayList<T> viewList;
 
@@ -127,7 +129,7 @@ class ListViewAdapter<T extends View> extends android.widget.BaseAdapter
 
     /* OnItemClickListener*/
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(android.widget.AdapterView<?> parent, View view, int position, long id) {
         view.setEnabled(!view.isEnabled());
     }
 }

@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
         }).start());
         about.setOnClickListener(v -> Toast.makeText(MainActivity.this, R.string.about_detail, Toast.LENGTH_LONG).show());
         about.setOnLongClickListener(v -> {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/37385/DeepClear")));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Nettal/DeepClear")));
             return true;
         });
     }
