@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class ForceStopService extends Service {
         if (running)
             return super.onStartCommand(intent, flags, startId);
         try {//获取到白名单
-            HashMap<String, Boolean> hashMap = (HashMap<String, Boolean>) Utilities.loadObjectFromFile(this, MainActivity.FileName);
+            HashMap<String, Boolean> hashMap = Utilities.loadObjectFromFile(this, MainActivity.FileName);
             forceStopThread = new ForceStopThread(this, hashMap);
             forceStopThread.start();
         } catch (Exception e) {//没获取到白名单
@@ -58,30 +59,36 @@ class ForceStopThread extends Thread {
             ArrayList<String> packageListBefore = Utilities.getRunningAppPackages(command);
             while (running) {
                 sleep(1000);
-                ArrayList<String> packageList = Utilities.getRunningAppPackages(command);
-                StringBuilder stringBuilder = new StringBuilder();
-                a:
-                for (String packageName : packageListBefore) {
-                    if (!packageList.contains(packageName) && !hashMap.getOrDefault(packageName,
-                            Utilities.isSystemApp(packageName, context) || packageName.equals(context.getPackageName()))) {
-                        for (String s : stringBuilder.toString().split(";")) {
-                            if (s.equals(packageName))
-                                continue a;
+                try {
+                    ArrayList<String> packageList = Utilities.getRunningAppPackages(command);
+                    Log.e("PackageList: ", packageList.toString());
+                    StringBuilder stringBuilder = new StringBuilder();
+                    a:
+                    for (String packageName : packageListBefore) {
+                        if (!packageList.contains(packageName) && Boolean.FALSE.equals(hashMap.getOrDefault(packageName,
+                                Utilities.isSystemApp(packageName, context)))) {
+                            for (String s : stringBuilder.toString().split(";")) {
+                                if (s.equals(packageName))
+                                    continue a;
+                            }
+                            stringBuilder.append(packageName);
+                            Log.e(packageName, packageName);
+                            stringBuilder.append(";");
+                            command.exec("am force-stop " + packageName);
+                            command.exec("am force-stop " + packageName);
+                            command.exec("am force-stop " + packageName);
                         }
-                        stringBuilder.append(packageName);
-                        stringBuilder.append(";");
-                        command.exec("am force-stop " + packageName);
-                        command.exec("am force-stop " + packageName);
-                        command.exec("am force-stop " + packageName);
                     }
+                    if (stringBuilder.length() != 0) {
+                        Utilities.toast("Killed:" + stringBuilder.deleteCharAt(stringBuilder.length() - 1), context);
+                    }
+                    packageListBefore = packageList;
+                } catch (Throwable e) {
+                    Utilities.toast(Utilities.printLog(e), context);
                 }
-                if (stringBuilder.length() != 0) {
-                    Utilities.toast("Killed:" + stringBuilder.deleteCharAt(stringBuilder.length() - 1), context);
-                }
-                packageListBefore = packageList;
             }
             command.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Utilities.toast(Utilities.printLog(e), context);
         }
     }

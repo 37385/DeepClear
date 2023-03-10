@@ -52,10 +52,10 @@ public class MainActivity extends Activity {
             Looper.prepare();
             final List<ApplicationInfo> fullAppList = Utilities.getAllApplications(MainActivity.this);
             try {//获取到白名单
-                HashMap<String, Boolean> hashMap = (HashMap<String, Boolean>) Utilities.loadObjectFromFile(MainActivity.this, FileName);
+                HashMap<String, Boolean> hashMap = Utilities.loadObjectFromFile(MainActivity.this, FileName);
                 for (ApplicationInfo info : fullAppList) {
                     DialogView dv = new DialogView(MainActivity.this, info, (int) (whiteList.getWidth() / 1.6), whiteList.getTextSize() / 1.7f);
-                    dv.setEnabled(hashMap.getOrDefault(info.packageName, Utilities.isSystemApp(info)));
+                    dv.setEnabled(Boolean.TRUE.equals(hashMap.getOrDefault(info.packageName, Utilities.isSystemApp(info))));
                     fullAppView.add(dv);
                 }
             } catch (Exception e) {//没获取到白名单

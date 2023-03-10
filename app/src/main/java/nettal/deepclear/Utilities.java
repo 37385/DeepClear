@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ public class Utilities {
         return s;
     }
 
-    public static String printLog(Exception e) {
+    public static String printLog(Throwable e) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(e.toString());
         for (StackTraceElement h : e.getStackTrace()) {
@@ -73,18 +74,19 @@ public class Utilities {
         fos.close();
     }
 
-    public static Object loadObjectFromFile(Context context, String file) throws Exception {
+    @SuppressWarnings("unchecked")
+    public static <T> T loadObjectFromFile(Context context, String file) throws Exception {
         FileInputStream fis = new FileInputStream(
                 context.getFileStreamPath(file).getAbsolutePath());
         ObjectInputStream ois = new ObjectInputStream(fis);
         Object obj = ois.readObject();
         ois.close();
         fis.close();
-        return obj;
+        return (T) obj;
     }
 
     /*Toast*/
-    public static final Handler mainHandler = new Handler();
+    public static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public static void toast(final String s, final Context context) {
         mainHandler.post(() -> Toast.makeText(context, s, Toast.LENGTH_SHORT).show());
