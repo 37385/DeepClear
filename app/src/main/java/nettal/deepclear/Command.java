@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-class Command {
+final class Command {
     Process process;
     BufferedReader bufferedInputReader; //命令输出(stdout)
     //	BufferedReader bufferedErrorReader;  //命令输出(stderr)

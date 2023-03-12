@@ -17,12 +17,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class Utilities {
+public final class Utilities {
     /*Debug*/
     static final boolean DEBUG = BuildConfig.DEBUG;
 
@@ -54,7 +54,8 @@ public class Utilities {
     public static void writeStringToFile(String destination, String text) {
         try {
             FileWriter fileWriter = new FileWriter(destination, true);
-            fileWriter.write("Time:" + DateFormat.getDateInstance().format(System.currentTimeMillis()) + System.lineSeparator());
+            fileWriter.write("-----------------------------------------------------");
+            fileWriter.write("\nTime: " + new Date() + ": " + System.lineSeparator());
             fileWriter.write(text);
             fileWriter.flush();
             fileWriter.close();

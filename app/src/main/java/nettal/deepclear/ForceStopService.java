@@ -9,7 +9,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ForceStopService extends Service {
+public final class ForceStopService extends Service {
+    public static final String LOG_FILE = "log.txt";
     private boolean running;
     private ForceStopThread forceStopThread;
 
@@ -41,7 +42,7 @@ public class ForceStopService extends Service {
     }
 }
 
-class ForceStopThread extends Thread {
+final class ForceStopThread extends Thread {
     private final Context context;
     private final HashMap<String, Boolean> hashMap;
     private boolean running;
@@ -61,7 +62,6 @@ class ForceStopThread extends Thread {
                 sleep(1000);
                 try {
                     ArrayList<String> packageList = Utilities.getRunningAppPackages(command);
-                    Log.e("PackageList: ", packageList.toString());
                     StringBuilder stringBuilder = new StringBuilder();
                     a:
                     for (String packageName : packageListBefore) {
@@ -72,11 +72,11 @@ class ForceStopThread extends Thread {
                                     continue a;
                             }
                             stringBuilder.append(packageName);
-                            Log.e(packageName, packageName);
                             stringBuilder.append(";");
                             command.exec("am force-stop " + packageName);
                             command.exec("am force-stop " + packageName);
                             command.exec("am force-stop " + packageName);
+                            Log.e("Killed: ", packageName);
                         }
                     }
                     if (stringBuilder.length() != 0) {
@@ -84,11 +84,14 @@ class ForceStopThread extends Thread {
                     }
                     packageListBefore = packageList;
                 } catch (Throwable e) {
+                    Utilities.writeStringToFile(context.getFileStreamPath(ForceStopService.LOG_FILE).getAbsolutePath(), Utilities.printLog(e));
                     Utilities.toast(Utilities.printLog(e), context);
+                    Thread.sleep(10000);
                 }
             }
             command.close();
         } catch (Throwable e) {
+            Utilities.writeStringToFile(context.getFileStreamPath(ForceStopService.LOG_FILE).getAbsolutePath(), Utilities.printLog(e));
             Utilities.toast(Utilities.printLog(e), context);
         }
     }

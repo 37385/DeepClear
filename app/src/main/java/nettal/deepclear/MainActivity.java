@@ -1,5 +1,6 @@
 package nettal.deepclear;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public final class MainActivity extends Activity {
 
     public static final String FileName = "WhiteList";
 
@@ -88,7 +89,8 @@ public class MainActivity extends Activity {
     }
 }
 
-class DialogView extends LinearLayout {
+@SuppressLint("ViewConstructor")
+final class DialogView extends LinearLayout {
     private final TextView textView;
     private final ApplicationInfo applicationInfo;
 
